@@ -1,0 +1,27 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: adminPassword
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data"
+    networks:
+      - postgres-network
+    ports:
+      - "5432:5432"
+  pgadmin:
+    image: chorss/docker-pgadmin4
+    restart: always
+    ports:
+      - "5050:5050"
+    volumes:
+      - "pgadmin-data:/data"
+    networks:
+      - postgres-network
+networks:
+  postgres-network :
+volumes:
+  postgres-data :
+  pgadmin-data :
