@@ -3,8 +3,11 @@ package home.nkavtur.hibernateexamples.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -28,7 +31,20 @@ public class Book {
     private String title;
 
     @ManyToMany(cascade = CascadeType.PERSIST, mappedBy = "books")
-    private Set<Reader> readers;
+    @Fetch(FetchMode.JOIN)
+//    @BatchSize(size = 50)
+    private Set<Reader> readers = new HashSet<>();
+
+    public void addReader(Reader reader) {
+        reader.getBooks().add(this);
+        readers.add(reader);
+    }
+
+    public void removeReader(Reader reader) {
+        reader.getBooks().remove(this);
+        readers.remove(reader);
+    }
+
 
     @Override
     public boolean equals(Object o) {

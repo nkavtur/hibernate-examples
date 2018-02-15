@@ -116,7 +116,6 @@
                             <failOnError>true</failOnError>
                             <enableLazyInitialization>true</enableLazyInitialization>
                             <enableDirtyTracking>true</enableDirtyTracking>
-                            <enableAssociationManagement>true</enableAssociationManagement>
                             <enableExtendedEnhancement>false</enableExtendedEnhancement>
                         </configuration>
                         <goals>

@@ -38,8 +38,48 @@ public class HibernateExamplesApplication {
 //            Donor donor = hibernateExamplesApplication.donor();
 //            hibernateExamplesApplication.merge(donor);
 //            hibernateExamplesApplication.accountsAndDebit();
-                hibernateExamplesApplication.booksReader();
+//                hibernateExamplesApplication.saveBooksReader();
+            hibernateExamplesApplication.delete();
         };
+    }
+
+    @Transactional
+    public void saveBooksReader() {
+        Book cloudNativeJava = new Book().setTitle("Cloud native java").setAuthor("Josh Long");
+        Book effectiveJava = new Book().setTitle("Effective Java").setAuthor("Joshua Bloch");
+        Book hadoopDefinitiveGuide = new Book().setTitle("Hadoop The Definitive guide").setAuthor("Tom White");
+
+        Reader nikolai = new Reader().setName("Nikolai Kavtur");
+        nikolai.addBook(cloudNativeJava);
+        nikolai.addBook(effectiveJava);
+
+        Reader vasya = new Reader().setName("Vasya Pupkin");
+        vasya.addBook(cloudNativeJava);
+        vasya.addBook(hadoopDefinitiveGuide);
+
+        entityManager.persist(nikolai);
+        entityManager.persist(vasya);
+    }
+
+    @Transactional
+    public void delete() {
+        Reader nikolai = entityManager.createQuery("from Reader r where r.name = :name", Reader.class)
+                .setParameter("name", "Nikolai Kavtur")
+                .getSingleResult();
+
+//        List<Book> books = new ArrayList<>(nikolai.getBooks());
+//        Book cloudNativeJava = books.stream().filter(b -> b.getTitle().equalsIgnoreCase("Cloud native java")).findAny().get();
+//        Book effectiveJava = books.stream().filter(b -> b.getTitle().equalsIgnoreCase("Effective Java")).findAny().get();
+
+
+        entityManager.remove(nikolai);
+        nikolai.getBooks().forEach(b -> {
+            b.getReaders().remove(nikolai);
+            if (b.getReaders().isEmpty()) {
+                entityManager.remove(b);
+            }
+        });
+
     }
 
     @Transactional
@@ -150,31 +190,6 @@ public class HibernateExamplesApplication {
 
     }
 
-    @Transactional
-    public void booksReader() {
-//        Book book1 = new Book()
-//                .setTitle("Cloud native java")
-//                .setAuthor("Josh Long");
-//
-//        Book book2 = new Book()
-//                .setTitle("Effective Java")
-//                .setAuthor("Joshua Bloch");
-//
-//        Reader reader = new Reader()
-//                .setName("Nikolai Kavtur")
-//                .setBooks(new HashSet<>(Arrays.asList(book1, book2)));
-//
-//        book1.setReaders(new HashSet<>());
-//        book1.getReaders().add(reader);
-//
-//        book2.setReaders(new HashSet<>());
-//        book2.getReaders().add(reader);
-//
-//        entityManager.persist(book1);
-
-
-        Reader reader = entityManager.createQuery("from Reader", Reader.class).getSingleResult();
-    }
 
     @Transactional
     public void merge(Donor donor) {
