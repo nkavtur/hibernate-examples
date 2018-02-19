@@ -123,7 +123,7 @@ CREATE TABLE hibernate_examples.book_reader (
   created_on timestamp DEFAULT current_timestamp,
   FOREIGN KEY (book_id) REFERENCES hibernate_examples.book (book_id),
   FOREIGN KEY (reader_id) REFERENCES hibernate_examples.reader (reader_id)
-)
+);
 
 delete from hibernate_examples.book_reader;
 delete from hibernate_examples.book;
@@ -172,7 +172,7 @@ CREATE TABLE hibernate_examples.department_employee (
   employee_id numeric(10, 0) not null,
   FOREIGN KEY (department_id) REFERENCES hibernate_examples.department (department_id),
   FOREIGN KEY (employee_id) REFERENCES hibernate_examples.employee (employee_id)
-)
+);
 
 delete from hibernate_examples.department_employee;
 delete from hibernate_examples.employee;
@@ -223,6 +223,32 @@ CREATE TABLE IF NOT EXISTS hibernate_examples.property_holder (
   "property_id" integer
 );
 
-select  * from hibernate_examples.property_holder;
-select  * from hibernate_examples.string_property;
-select  * from hibernate_examples.integer_property;
+
+DROP SEQUENCE IF EXISTS hibernate_examples.property_repository_id_seq;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.property_repository_id_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.property_repositoty;
+CREATE TABLE hibernate_examples.property_repositoty (
+  property_repository_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.property_repository_id_seq'),
+  "name" varchar(100)
+);
+
+DROP SEQUENCE IF EXISTS hibernate_examples.repository_properties_id_seq;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.repository_properties_id_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.repository_properties;
+CREATE TABLE hibernate_examples.repository_properties (
+  repository_id numeric(10, 0) NOT NULL,
+  property_type VARCHAR(255),
+  property_id numeric(10, 0) NOT NULL,
+  FOREIGN KEY (repository_id) REFERENCES hibernate_examples.property_repositoty (property_repository_id)
+);
+
+delete from hibernate_examples.string_property;
+delete from hibernate_examples.integer_property;
+delete from hibernate_examples.repository_properties;
+delete from hibernate_examples.property_repositoty;
+
+
+select * from hibernate_examples.string_property;
+select * from hibernate_examples.property_repositoty;

@@ -43,8 +43,24 @@ public class HibernateExamplesApplication {
 //                hibernateExamplesApplication.saveBooksReader();
 //            hibernateExamplesApplication.delete();
 //            hibernateExamplesApplication.saveDepartmentEmployees();
-            hibernateExamplesApplication.property();
+//            hibernateExamplesApplication.property();
+            hibernateExamplesApplication.propertyRepository();
         };
+    }
+
+    @Transactional
+    public void propertyRepository() {
+//        PropertyRepository propertyRepository = new PropertyRepository();
+//        propertyRepository.setName("My Repo");
+//        StringProperty stringProperty1 = new StringProperty().setName("power").setValue("POwer fg123");
+//        StringProperty stringProperty2 = new StringProperty().setName("engine").setValue("Big Engine");
+//        IntegerProperty integerProperty = new IntegerProperty().setName("volume").setValue(1);
+//
+//        propertyRepository.getProperties().addAll(Arrays.asList(stringProperty1, integerProperty, stringProperty2));
+
+//        entityManager.persist(propertyRepository);
+        PropertyRepository propertyRepository = entityManager.find(PropertyRepository.class, -40L);
+        propertyRepository.getProperties().forEach(p -> System.out.println(p.getName()));
     }
 
     @Transactional
