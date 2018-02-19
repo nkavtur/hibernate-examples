@@ -90,7 +90,8 @@ CREATE TABLE hibernate_examples.account (
   FOREIGN KEY (client_id) REFERENCES hibernate_examples.client (client_id)
 );
 
-
+select * from hibernate_examples.client;
+select * from hibernate_examples.account;
 
 DROP SEQUENCE IF EXISTS hibernate_examples.book_id_seq CASCADE;
 CREATE SEQUENCE IF NOT EXISTS hibernate_examples.book_id_seq START 1;
@@ -139,3 +140,89 @@ from
     ON br.reader_id = r.reader_id
   left join hibernate_examples.book b
     ON b.book_id = br.book_id;
+
+
+DROP SEQUENCE IF EXISTS hibernate_examples.department_id_seq CASCADE;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.department_id_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.department CASCADE;
+CREATE TABLE hibernate_examples.department (
+  department_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.department_id_seq'),
+  name varchar(255)
+);
+
+DROP SEQUENCE IF EXISTS hibernate_examples.employee_id_seq CASCADE;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.employee_id_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.employee CASCADE;
+CREATE TABLE IF NOT EXISTS hibernate_examples.employee (
+  employee_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.employee_id_seq'),
+  first_name varchar(255),
+  last_name varchar(255),
+  phone_number varchar(255)
+);
+
+DROP SEQUENCE IF EXISTS hibernate_examples.department_employee_seq CASCADE;
+CREATE SEQUENCE hibernate_examples.department_employee_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.department_employee CASCADE;
+CREATE TABLE hibernate_examples.department_employee (
+  department_employee_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.department_employee_seq'),
+  department_id numeric(10, 0) not null,
+  employee_id numeric(10, 0) not null,
+  FOREIGN KEY (department_id) REFERENCES hibernate_examples.department (department_id),
+  FOREIGN KEY (employee_id) REFERENCES hibernate_examples.employee (employee_id)
+)
+
+delete from hibernate_examples.department_employee;
+delete from hibernate_examples.employee;
+delete from hibernate_examples.department;
+
+select * from hibernate_examples.employee;
+select * from hibernate_examples.department;
+select * from hibernate_examples.department_employee;
+
+select *
+from
+  hibernate_examples.employee e
+  left join hibernate_examples.department_employee de
+    ON de.employee_id = e.employee_id
+  left join hibernate_examples.department d
+    ON d.department_id = de.department_id;
+
+
+DROP SEQUENCE IF EXISTS hibernate_examples.string_property_id_seq CASCADE;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.string_property_id_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.string_property CASCADE;
+CREATE TABLE IF NOT EXISTS hibernate_examples.string_property (
+  string_property_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.string_property_id_seq'),
+  "name" varchar(100),
+  "value" varchar(100)
+);
+
+
+DROP SEQUENCE IF EXISTS hibernate_examples.integer_property_id_seq CASCADE;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.integer_property_id_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.integer_property CASCADE;
+CREATE TABLE IF NOT EXISTS hibernate_examples.integer_property (
+  integer_property_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.integer_property_id_seq'),
+  "name" varchar(100),
+  "value" integer
+);
+
+
+DROP SEQUENCE IF EXISTS hibernate_examples.property_holder_id_seq CASCADE;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.property_holder_id_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.property_holder CASCADE;
+CREATE TABLE IF NOT EXISTS hibernate_examples.property_holder (
+  property_holder_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.property_holder_id_seq'),
+  "property_type" varchar(100),
+  "property_id" integer
+);
+
+select  * from hibernate_examples.property_holder;
+select  * from hibernate_examples.string_property;
+select  * from hibernate_examples.integer_property;

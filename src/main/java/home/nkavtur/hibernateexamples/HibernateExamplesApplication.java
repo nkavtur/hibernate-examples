@@ -2,6 +2,7 @@ package home.nkavtur.hibernateexamples;
 
 import home.nkavtur.hibernateexamples.domain.*;
 import lombok.SneakyThrows;
+import org.hibernate.Session;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -38,9 +39,52 @@ public class HibernateExamplesApplication {
 //            Donor donor = hibernateExamplesApplication.donor();
 //            hibernateExamplesApplication.merge(donor);
 //            hibernateExamplesApplication.accountsAndDebit();
+//            hibernateExamplesApplication.accountsAndDebitFilter();
 //                hibernateExamplesApplication.saveBooksReader();
-            hibernateExamplesApplication.delete();
+//            hibernateExamplesApplication.delete();
+//            hibernateExamplesApplication.saveDepartmentEmployees();
+            hibernateExamplesApplication.property();
         };
+    }
+
+    @Transactional
+    public void property() {
+        PropertyHolder propertyHolder = new PropertyHolder();
+
+        StringProperty stringProperty1 = new StringProperty().setName("power").setValue("POwer fg123");
+        StringProperty stringProperty2 = new StringProperty().setName("engine").setValue("Big Engine");
+        IntegerProperty integerProperty = new IntegerProperty().setName("volume").setValue(1);
+
+        entityManager.persist(stringProperty1);
+        entityManager.persist(stringProperty2);
+        entityManager.persist(integerProperty);
+        entityManager.persist(propertyHolder);
+    }
+
+    @Transactional
+    public void saveDepartmentEmployees() {
+        Employee nikolaiKavtur = new Employee().setFirstName("Nikolai").setLastName("Kavtur").setPhoneNumber("+375445536507");
+        Employee joshLong = new Employee().setFirstName("Josh").setLastName("Long").setPhoneNumber("+375114241414");
+        Employee vasyaPupkin = new Employee().setFirstName("Vasya").setLastName("Pupkin").setPhoneNumber("+3754442341245");
+
+        Department it = new Department().setName("IT");
+        it.addEmployees(nikolaiKavtur, joshLong);
+
+        Department marketing = new Department().setName("Marketing");
+        marketing.addEmployees(joshLong, vasyaPupkin);
+
+        entityManager.persist(it);
+        entityManager.persist(marketing);
+    }
+
+    @Transactional
+    public void accountsAndDebitFilter() {
+        entityManager.unwrap(Session.class)
+                .enableFilter("type_filter")
+                .setParameter("account_type", "CREDIT");
+
+        Client client = entityManager.find(Client.class, -45L);
+        client.getDebitAccounts().forEach(System.out::println);
     }
 
     @Transactional
@@ -189,7 +233,6 @@ public class HibernateExamplesApplication {
         System.out.println(client.getDebitAccounts().size());
 
     }
-
 
     @Transactional
     public void merge(Donor donor) {

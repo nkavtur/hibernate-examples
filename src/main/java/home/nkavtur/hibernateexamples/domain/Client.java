@@ -3,6 +3,7 @@ package home.nkavtur.hibernateexamples.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -27,7 +28,7 @@ public class Client {
 
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    @Where( clause = "account_type = 'DEBIT'")
+    @Filter(name = "type_filter", condition = "account_type = :account_type")
     private List<Account> debitAccounts;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, orphanRemoval = true)

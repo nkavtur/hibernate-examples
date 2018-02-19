@@ -3,7 +3,11 @@ package home.nkavtur.hibernateexamples.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Where;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,7 +20,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Where(clause = "active = true")
+//@Where(clause = "active = true")
+@FilterDef(name = "type_filter", parameters = @ParamDef(name = "account_type", type = "string"))
+@Filter(name = "type_filter", condition = "account_type = :account_type")
 public class Account {
 
     @Id
@@ -51,5 +57,10 @@ public class Account {
     @Override
     public int hashCode() {
         return Objects.hash(amount, rate, active);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
     }
 }
