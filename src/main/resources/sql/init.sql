@@ -1,6 +1,7 @@
 DROP SCHEMA IF EXISTS hibernate_examples CASCADE;
 CREATE SCHEMA hibernate_examples;
 
+-- ===================================================================================
 DROP SEQUENCE IF EXISTS hibernate_examples.contact_id_seq CASCADE;
 CREATE SEQUENCE hibernate_examples.contact_id_seq START 1;
 
@@ -20,6 +21,11 @@ ALTER TABLE hibernate_examples.contact ADD CONSTRAINT flag_types CHECK (flag = '
 
 INSERT INTO hibernate_examples.contact (first, starred, flag) VALUES('hello', true, '1');
 select * from hibernate_examples.contact;
+
+
+
+-- ===================================================================================
+
 
 DROP SEQUENCE IF EXISTS hibernate_examples.location_id_seq CASCADE;
 CREATE SEQUENCE hibernate_examples.location_id_seq START 1;
@@ -43,6 +49,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- ===================================================================================
+
+
 DROP TABLE IF EXISTS hibernate_examples.donor CASCADE;
 CREATE TABLE hibernate_examples.donor (
   donor_id uuid PRIMARY KEY,
@@ -64,6 +73,7 @@ CREATE TRIGGER update_ts_donor_tr
 
 select * from hibernate_examples.donor;
 
+-- ===================================================================================
 
 DROP SEQUENCE IF EXISTS hibernate_examples.client_id_seq CASCADE;
 CREATE SEQUENCE hibernate_examples.client_id_seq START 1;
@@ -93,14 +103,31 @@ CREATE TABLE hibernate_examples.account (
 select * from hibernate_examples.client;
 select * from hibernate_examples.account;
 
+-- ===================================================================================
+DROP SEQUENCE IF EXISTS hibernate_examples.country_id_seq CASCADE;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.country_id_seq START 1;
+
+
+DROP TABLE IF EXISTS hibernate_examples.country CASCADE;
+CREATE TABLE hibernate_examples.country (
+  country_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.country_id_seq'),
+  "name" varchar(255)
+);
+
 DROP SEQUENCE IF EXISTS hibernate_examples.book_id_seq CASCADE;
-CREATE SEQUENCE IF NOT EXISTS hibernate_examples.book_id_seq START 1;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.book_id_seq;
 
 DROP TABLE IF EXISTS hibernate_examples.book CASCADE;
 CREATE TABLE hibernate_examples.book (
   book_id numeric(10, 0) PRIMARY KEY DEFAULT nextval('hibernate_examples.book_id_seq'),
   author varchar(255),
-  title varchar(255)
+  paper_publisher_name varchar(255),
+  paper_publisher_country_id numeric(10, 0),
+  ebook_publisher_name varchar(255),
+  ebook_publisher_country_id numeric(10, 0),
+  title varchar(255),
+  FOREIGN KEY (paper_publisher_country_id) REFERENCES hibernate_examples.country (country_id),
+  FOREIGN KEY (ebook_publisher_country_id) REFERENCES hibernate_examples.country (country_id)
 );
 
 DROP SEQUENCE IF EXISTS hibernate_examples.reader_id_seq CASCADE;
@@ -126,20 +153,25 @@ CREATE TABLE hibernate_examples.book_reader (
 );
 
 delete from hibernate_examples.book_reader;
+delete from hibernate_examples.country;
 delete from hibernate_examples.book;
 delete from hibernate_examples.reader;
+delete from hibernate_examples.country;
 
 select * from hibernate_examples.book;
 select * from hibernate_examples.reader;
 select * from hibernate_examples.book_reader;
+select * from hibernate_examples.country;
 
-select *
 from
-  hibernate_examples.reader r
-  left join hibernate_examples.book_reader br
-    ON br.reader_id = r.reader_id
-  left join hibernate_examples.book b
-    ON b.book_id = br.book_id;
+hibernate_examples.reader r
+left join hibernate_examples.book_reader br
+ON br.reader_id = r.reader_id
+left join hibernate_examples.book b
+ON b.book_id = br.book_id;
+
+
+-- ===================================================================================
 
 
 DROP SEQUENCE IF EXISTS hibernate_examples.department_id_seq CASCADE;
@@ -189,6 +221,9 @@ from
     ON de.employee_id = e.employee_id
   left join hibernate_examples.department d
     ON d.department_id = de.department_id;
+
+
+-- ===================================================================================
 
 
 DROP SEQUENCE IF EXISTS hibernate_examples.string_property_id_seq CASCADE;
@@ -244,11 +279,5 @@ CREATE TABLE hibernate_examples.repository_properties (
   FOREIGN KEY (repository_id) REFERENCES hibernate_examples.property_repositoty (property_repository_id)
 );
 
-delete from hibernate_examples.string_property;
-delete from hibernate_examples.integer_property;
-delete from hibernate_examples.repository_properties;
-delete from hibernate_examples.property_repositoty;
 
-
-select * from hibernate_examples.string_property;
-select * from hibernate_examples.property_repositoty;
+-- ===================================================================================

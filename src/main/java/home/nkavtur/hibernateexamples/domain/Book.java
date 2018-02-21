@@ -35,6 +35,14 @@ public class Book {
 //    @BatchSize(size = 50)
     private Set<Reader> readers = new HashSet<>();
 
+    @AttributeOverride(name = "name", column = @Column(name = "paper_publisher_name"))
+    @AssociationOverride(name = "country", joinColumns = @JoinColumn(name = "paper_publisher_country_id"))
+    private Publisher paperPublisher;
+
+    @AttributeOverride(name = "name", column = @Column(name = "ebook_publisher_name"))
+    @AssociationOverride(name = "country", joinColumns = @JoinColumn(name = "ebook_publisher_country_id"))
+    private Publisher ebookPublisher;
+
     public void addReader(Reader reader) {
         reader.getBooks().add(this);
         readers.add(reader);

@@ -40,12 +40,62 @@ public class HibernateExamplesApplication {
 //            hibernateExamplesApplication.merge(donor);
 //            hibernateExamplesApplication.accountsAndDebit();
 //            hibernateExamplesApplication.accountsAndDebitFilter();
-//                hibernateExamplesApplication.saveBooksReader();
-//            hibernateExamplesApplication.delete();
+            hibernateExamplesApplication.saveBooksReader();
+//            hibernateExamplesApplication.deleteBookReaders();
 //            hibernateExamplesApplication.saveDepartmentEmployees();
 //            hibernateExamplesApplication.property();
-            hibernateExamplesApplication.propertyRepository();
+//            hibernateExamplesApplication.propertyRepository();
         };
+    }
+
+    @Transactional
+    public void saveBooksReader() {
+        Country country = new Country().setName("New York");
+        Country country1 = new Country().setName("London");
+        Country country2 = new Country().setName("Moscow");
+        Country country3 = new Country().setName("Paris");
+
+        Book cloudNativeJava = new Book().setTitle("Cloud native java").setAuthor("Josh Long")
+                .setEbookPublisher(new Publisher().setName("ebook").setCountry(country))
+                .setPaperPublisher(new Publisher().setName("paper").setCountry(country3));
+        Book effectiveJava = new Book().setTitle("Effective Java").setAuthor("Joshua Bloch")
+                .setEbookPublisher(new Publisher().setName("ebook1").setCountry(country))
+                .setPaperPublisher(new Publisher().setName("paper1").setCountry(country1));
+
+        Book hadoopDefinitiveGuide = new Book().setTitle("Hadoop The Definitive guide").setAuthor("Tom White")
+                .setEbookPublisher(new Publisher().setName("ebook2").setCountry(country))
+                .setPaperPublisher(new Publisher().setName("paper2").setCountry(country2));
+
+        Reader nikolai = new Reader().setName("Nikolai Kavtur");
+        nikolai.addBook(cloudNativeJava);
+        nikolai.addBook(effectiveJava);
+
+        Reader vasya = new Reader().setName("Vasya Pupkin");
+        vasya.addBook(cloudNativeJava);
+        vasya.addBook(hadoopDefinitiveGuide);
+
+        entityManager.persist(nikolai);
+        entityManager.persist(vasya);
+    }
+
+    @Transactional
+    public void deleteBookReaders() {
+        Reader nikolai = entityManager.createQuery("from Reader r where r.name = :name", Reader.class)
+                .setParameter("name", "Nikolai Kavtur")
+                .getSingleResult();
+
+//        List<Book> books = new ArrayList<>(nikolai.getBooks());
+//        Book cloudNativeJava = books.stream().filter(b -> b.getTitle().equalsIgnoreCase("Cloud native java")).findAny().get();
+//        Book effectiveJava = books.stream().filter(b -> b.getTitle().equalsIgnoreCase("Effective Java")).findAny().get();
+
+        entityManager.remove(nikolai);
+        nikolai.getBooks().forEach(b -> {
+            b.getReaders().remove(nikolai);
+            if (b.getReaders().isEmpty()) {
+                entityManager.remove(b);
+            }
+        });
+
     }
 
     @Transactional
@@ -101,45 +151,6 @@ public class HibernateExamplesApplication {
 
         Client client = entityManager.find(Client.class, -45L);
         client.getDebitAccounts().forEach(System.out::println);
-    }
-
-    @Transactional
-    public void saveBooksReader() {
-        Book cloudNativeJava = new Book().setTitle("Cloud native java").setAuthor("Josh Long");
-        Book effectiveJava = new Book().setTitle("Effective Java").setAuthor("Joshua Bloch");
-        Book hadoopDefinitiveGuide = new Book().setTitle("Hadoop The Definitive guide").setAuthor("Tom White");
-
-        Reader nikolai = new Reader().setName("Nikolai Kavtur");
-        nikolai.addBook(cloudNativeJava);
-        nikolai.addBook(effectiveJava);
-
-        Reader vasya = new Reader().setName("Vasya Pupkin");
-        vasya.addBook(cloudNativeJava);
-        vasya.addBook(hadoopDefinitiveGuide);
-
-        entityManager.persist(nikolai);
-        entityManager.persist(vasya);
-    }
-
-    @Transactional
-    public void delete() {
-        Reader nikolai = entityManager.createQuery("from Reader r where r.name = :name", Reader.class)
-                .setParameter("name", "Nikolai Kavtur")
-                .getSingleResult();
-
-//        List<Book> books = new ArrayList<>(nikolai.getBooks());
-//        Book cloudNativeJava = books.stream().filter(b -> b.getTitle().equalsIgnoreCase("Cloud native java")).findAny().get();
-//        Book effectiveJava = books.stream().filter(b -> b.getTitle().equalsIgnoreCase("Effective Java")).findAny().get();
-
-
-        entityManager.remove(nikolai);
-        nikolai.getBooks().forEach(b -> {
-            b.getReaders().remove(nikolai);
-            if (b.getReaders().isEmpty()) {
-                entityManager.remove(b);
-            }
-        });
-
     }
 
     @Transactional
