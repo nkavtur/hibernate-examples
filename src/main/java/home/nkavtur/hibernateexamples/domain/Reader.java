@@ -3,6 +3,7 @@ package home.nkavtur.hibernateexamples.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -30,7 +31,7 @@ public class Reader {
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @Fetch(FetchMode.JOIN)
-//    @BatchSize(size = 50)
+    @BatchSize(size = 50)
     @JoinTable(name = "book_reader",
             joinColumns = @JoinColumn(name = "reader_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))

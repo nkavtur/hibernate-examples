@@ -3,6 +3,7 @@ package home.nkavtur.hibernateexamples.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -32,7 +33,7 @@ public class Book {
 
     @ManyToMany(cascade = CascadeType.PERSIST, mappedBy = "books")
     @Fetch(FetchMode.JOIN)
-//    @BatchSize(size = 50)
+    @BatchSize(size = 50)
     private Set<Reader> readers = new HashSet<>();
 
     @AttributeOverride(name = "name", column = @Column(name = "paper_publisher_name"))
@@ -42,6 +43,10 @@ public class Book {
     @AttributeOverride(name = "name", column = @Column(name = "ebook_publisher_name"))
     @AssociationOverride(name = "country", joinColumns = @JoinColumn(name = "ebook_publisher_country_id"))
     private Publisher ebookPublisher;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "library_id")
+    private Library library;
 
     public void addReader(Reader reader) {
         reader.getBooks().add(this);

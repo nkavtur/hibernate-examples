@@ -114,6 +114,16 @@ CREATE TABLE hibernate_examples.country (
   "name" varchar(255)
 );
 
+
+DROP SEQUENCE IF EXISTS hibernate_examples.library_id_seq CASCADE;
+CREATE SEQUENCE IF NOT EXISTS hibernate_examples.library_id_seq START 1;
+
+DROP TABLE IF EXISTS hibernate_examples.library;
+CREATE TABLE IF NOT EXISTS hibernate_examples.library (
+  library_id bigint PRIMARY KEY default nextval('hibernate_examples.library_id_seq'),
+  "name" VARCHAR(50)
+);
+
 DROP SEQUENCE IF EXISTS hibernate_examples.book_id_seq CASCADE;
 CREATE SEQUENCE IF NOT EXISTS hibernate_examples.book_id_seq;
 
@@ -126,8 +136,10 @@ CREATE TABLE hibernate_examples.book (
   ebook_publisher_name varchar(255),
   ebook_publisher_country_id numeric(10, 0),
   title varchar(255),
+  library_id bigint,
   FOREIGN KEY (paper_publisher_country_id) REFERENCES hibernate_examples.country (country_id),
-  FOREIGN KEY (ebook_publisher_country_id) REFERENCES hibernate_examples.country (country_id)
+  FOREIGN KEY (ebook_publisher_country_id) REFERENCES hibernate_examples.country (country_id),
+  FOREIGN KEY (library_id) REFERENCES hibernate_examples.library(library_id)
 );
 
 DROP SEQUENCE IF EXISTS hibernate_examples.reader_id_seq CASCADE;
@@ -163,16 +175,15 @@ select * from hibernate_examples.reader;
 select * from hibernate_examples.book_reader;
 select * from hibernate_examples.country;
 
-from
-hibernate_examples.reader r
-left join hibernate_examples.book_reader br
-ON br.reader_id = r.reader_id
-left join hibernate_examples.book b
-ON b.book_id = br.book_id;
+select * from
+  hibernate_examples.reader r
+  left join hibernate_examples.book_reader br
+    ON br.reader_id = r.reader_id
+  left join hibernate_examples.book b
+    ON b.book_id = br.book_id;
 
 
 -- ===================================================================================
-
 
 DROP SEQUENCE IF EXISTS hibernate_examples.department_id_seq CASCADE;
 CREATE SEQUENCE IF NOT EXISTS hibernate_examples.department_id_seq START 1;

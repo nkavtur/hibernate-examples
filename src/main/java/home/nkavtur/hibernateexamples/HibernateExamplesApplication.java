@@ -17,6 +17,8 @@ import javax.transaction.Transactional;
 import java.sql.Blob;
 import java.util.*;
 
+import static java.util.Arrays.*;
+
 @SpringBootApplication
 @Transactional
 public class HibernateExamplesApplication {
@@ -50,21 +52,24 @@ public class HibernateExamplesApplication {
 
     @Transactional
     public void saveBooksReader() {
-        Country country = new Country().setName("New York");
-        Country country1 = new Country().setName("London");
-        Country country2 = new Country().setName("Moscow");
-        Country country3 = new Country().setName("Paris");
+        Library nyLibrary = new Library().setName("NY Library");
+        Library leninLibrary = new Library().setName("Lenin Library");
+
+        Country newYork = new Country().setName("New York");
+        Country london = new Country().setName("London");
+        Country monsow = new Country().setName("Moscow");
+        Country paris = new Country().setName("Paris");
 
         Book cloudNativeJava = new Book().setTitle("Cloud native java").setAuthor("Josh Long")
-                .setEbookPublisher(new Publisher().setName("ebook").setCountry(country))
-                .setPaperPublisher(new Publisher().setName("paper").setCountry(country3));
+                .setEbookPublisher(new Publisher().setName("ebook").setCountry(newYork))
+                .setPaperPublisher(new Publisher().setName("paper").setCountry(paris));
         Book effectiveJava = new Book().setTitle("Effective Java").setAuthor("Joshua Bloch")
-                .setEbookPublisher(new Publisher().setName("ebook1").setCountry(country))
-                .setPaperPublisher(new Publisher().setName("paper1").setCountry(country1));
+                .setEbookPublisher(new Publisher().setName("ebook1").setCountry(newYork))
+                .setPaperPublisher(new Publisher().setName("paper1").setCountry(london));
 
         Book hadoopDefinitiveGuide = new Book().setTitle("Hadoop The Definitive guide").setAuthor("Tom White")
-                .setEbookPublisher(new Publisher().setName("ebook2").setCountry(country))
-                .setPaperPublisher(new Publisher().setName("paper2").setCountry(country2));
+                .setEbookPublisher(new Publisher().setName("ebook2").setCountry(newYork))
+                .setPaperPublisher(new Publisher().setName("paper2").setCountry(monsow));
 
         Reader nikolai = new Reader().setName("Nikolai Kavtur");
         nikolai.addBook(cloudNativeJava);
@@ -74,8 +79,12 @@ public class HibernateExamplesApplication {
         vasya.addBook(cloudNativeJava);
         vasya.addBook(hadoopDefinitiveGuide);
 
-        entityManager.persist(nikolai);
-        entityManager.persist(vasya);
+        leninLibrary.addBook(cloudNativeJava);
+        nyLibrary.addBook(effectiveJava);
+        nyLibrary.addBook(hadoopDefinitiveGuide);
+
+        entityManager.persist(leninLibrary);
+        entityManager.persist(nyLibrary);
     }
 
     @Transactional
