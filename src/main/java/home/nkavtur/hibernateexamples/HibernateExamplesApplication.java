@@ -49,12 +49,23 @@ public class HibernateExamplesApplication {
 //            hibernateExamplesApplication.accountsAndDebit();
 //            hibernateExamplesApplication.accountsAndDebitFilter();
 //            hibernateExamplesApplication.deleteBookReaders();
-            hibernateExamplesApplication.saveBooksReader();
-            hibernateExamplesApplication.fetchBooksReaders();
+//            hibernateExamplesApplication.saveBooksReader();
+//            hibernateExamplesApplication.fetchBooksReaders();
 //            hibernateExamplesApplication.saveDepartmentEmployees();
 //            hibernateExamplesApplication.property();
 //            hibernateExamplesApplication.propertyRepository();
+
+            hibernateExamplesApplication.saveSystemUser();
         };
+    }
+
+    @Transactional
+    public void saveSystemUser() {
+        SystemUser systemUser = new SystemUser();
+        systemUser.setName("John");
+        systemUser.setId(SystemUserId.valueOf(123, "hello@world.com"));
+
+        entityManager.persist(systemUser);
     }
 
     @Transactional
