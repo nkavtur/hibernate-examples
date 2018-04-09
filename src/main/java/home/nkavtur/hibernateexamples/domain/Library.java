@@ -29,6 +29,7 @@ public class Library {
 
     public Library addBook(Book book) {
         books.add(book);
+        book.setLibrary(this);
         return this;
     }
 

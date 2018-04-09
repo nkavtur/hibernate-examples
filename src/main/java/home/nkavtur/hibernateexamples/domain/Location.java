@@ -17,8 +17,8 @@ import java.util.Objects;
 public class Location {
 
     @Id
-    @GeneratedValue(generator = "gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "gen", sequenceName = "location_id_seq", allocationSize = 1)
+    @GeneratedValue(generator = "location_id_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "location_id_seq", sequenceName = "location_id_seq", allocationSize = 1)
     @Column(name = "location_id")
     private Long id;
 

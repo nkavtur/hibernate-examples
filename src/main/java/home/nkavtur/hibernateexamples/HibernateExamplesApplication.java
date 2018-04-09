@@ -13,7 +13,13 @@ import org.springframework.core.io.ClassPathResource;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Transient;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.sql.Blob;
 import java.util.*;
 
@@ -42,12 +48,24 @@ public class HibernateExamplesApplication {
 //            hibernateExamplesApplication.merge(donor);
 //            hibernateExamplesApplication.accountsAndDebit();
 //            hibernateExamplesApplication.accountsAndDebitFilter();
-            hibernateExamplesApplication.saveBooksReader();
 //            hibernateExamplesApplication.deleteBookReaders();
+            hibernateExamplesApplication.saveBooksReader();
+            hibernateExamplesApplication.fetchBooksReaders();
 //            hibernateExamplesApplication.saveDepartmentEmployees();
 //            hibernateExamplesApplication.property();
 //            hibernateExamplesApplication.propertyRepository();
         };
+    }
+
+    @Transactional
+    public void fetchBooksReaders()  {
+        List<Book> resultList = entityManager.createQuery(
+                "from Book", Book.class)
+                .getResultList();
+
+        System.out.println(resultList);
+        resultList.forEach(b -> System.out.println(b.getTitle()));
+
     }
 
     @Transactional
@@ -90,8 +108,7 @@ public class HibernateExamplesApplication {
     @Transactional
     public void deleteBookReaders() {
         Reader nikolai = entityManager.createQuery("from Reader r where r.name = :name", Reader.class)
-                .setParameter("name", "Nikolai Kavtur")
-                .getSingleResult();
+                .setParameter("name", "Nikolai Kavtur").getSingleResult();
 
 //        List<Book> books = new ArrayList<>(nikolai.getBooks());
 //        Book cloudNativeJava = books.stream().filter(b -> b.getTitle().equalsIgnoreCase("Cloud native java")).findAny().get();
@@ -136,6 +153,7 @@ public class HibernateExamplesApplication {
         entityManager.persist(propertyHolder);
     }
 
+
     @Transactional
     public void saveDepartmentEmployees() {
         Employee nikolaiKavtur = new Employee().setFirstName("Nikolai").setLastName("Kavtur").setPhoneNumber("+375445536507");
@@ -144,7 +162,6 @@ public class HibernateExamplesApplication {
 
         Department it = new Department().setName("IT");
         it.addEmployees(nikolaiKavtur, joshLong);
-
         Department marketing = new Department().setName("Marketing");
         marketing.addEmployees(joshLong, vasyaPupkin);
 
@@ -180,7 +197,6 @@ public class HibernateExamplesApplication {
         entityManager.persist(location1);
         entityManager.persist(location2);
         entityManager.persist(location3);
-
     }
 
     @SneakyThrows

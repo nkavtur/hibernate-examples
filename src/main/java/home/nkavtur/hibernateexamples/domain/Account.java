@@ -26,8 +26,8 @@ import java.util.Objects;
 public class Account {
 
     @Id
-    @GeneratedValue(generator = "id_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "id_gen", sequenceName = "client_id_seq")
+    @GeneratedValue(generator = "account_id_gen", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "account_id_gen", sequenceName = "account_id_gen")
     private Long accountId;
 
     private BigDecimal amount;

@@ -13,9 +13,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQL9Dialect
         default_schema: hibernate_examples
         jdbc.lob.non_contextual_creation: true
-        jdbc.batch_size: 10
+        jdbc.batch_size: 50
         hibernate.order_updates: true
         hibernate.order_inserts: true
+        jdbc.time_zone: UTC
       database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     show-sql: false
 

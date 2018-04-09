@@ -40,7 +40,6 @@ CREATE TABLE hibernate_examples.location (
 INSERT INTO hibernate_examples.location (type, name) VALUES('DEALERSHIP', 'San Francisco Cars');
 select * from hibernate_examples.location;
 
-DROP FUNCTION IF EXISTS hibernate_examples.set_update_ts CASCADE;
 CREATE OR REPLACE FUNCTION hibernate_examples.set_update_ts()
   RETURNS TRIGGER AS $$
 BEGIN

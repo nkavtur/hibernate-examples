@@ -20,8 +20,8 @@ import java.util.Objects;
 public class Client {
 
     @Id
-    @GeneratedValue(generator = "id_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "id_gen", sequenceName = "account_id_seq")
+    @GeneratedValue(generator = "client_id_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "client_id_seq", sequenceName = "client_id_seq")
     private Long clientId;
 
     private String name;
